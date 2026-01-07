@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import { AppContext } from '../context/AppContext'
-import { assets } from '../assets/assets';
+import { assets, JobCategories, JobLocations } from '../assets/assets';
 
 const JobListings = () => {
 
@@ -26,7 +26,7 @@ const JobListings = () => {
                             </span> 
                         )}
                         {searchFilter.location && (
-                            <span className='inline-flex items-center gap-2.5 bg-red-50 border border-blue-200 px-4 py-1.5 rounded'>
+                            <span className='ml-2 inline-flex items-center gap-2.5 bg-red-50 border border-blue-200 px-4 py-1.5 rounded'>
                                 {searchFilter.location}
                                 <img onClick={ e => setSearchFilter(prev =>({...prev, location:""})) } src={assets.cross_icon} className='cursor-pointer' alt="" />
                             </span>
@@ -37,7 +37,50 @@ const JobListings = () => {
                 )
 
             }
+
+            {/* Category Filters */}
+            <div className='max-lg:hidden'>
+                <h4 className='font-medium text-lg py-4'>Search by Categories</h4>
+                <ul className='space-y-4 text-gray-600'>
+                    {
+                        JobCategories.map((category, index) =>(
+                            <li className='flex gap-3 items-center' key={index}>
+                                <input className='scale-125' type="checkbox" name='' id='' />
+                                {category}
+
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
+
+
+            {/*     Location Filters */}
+            <div className='max-lg:hidden'>
+                <h4 className='font-medium text-lg py-4 pt-14'>Search by Location</h4>
+                <ul className='space-y-4 text-gray-600'>
+                    {
+                        JobLocations.map((location, index) =>(
+                            <li className='flex gap-3 items-center' key={index}>
+                                <input className='scale-125' type="checkbox" name='' id='' />
+                                {location}
+
+                            </li>
+                        ))
+                    }
+                </ul>
+            </div>
         </div>
+
+
+        {/* Job Listings */}
+        <section className='w-full lg:w-3/4 text-gray-800 max-lg:px-4'>
+            <h3 className='font-medium text-3xl py-2 id' id='job-list'>Latest jobs</h3>
+            <p className='mb-8'>Get your desired job from top companies</p>
+            <div className='grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4'>
+
+            </div>
+        </section>
     </div>
   )
 }
