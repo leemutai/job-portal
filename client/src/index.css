@@ -7,3 +7,87 @@
 *{
     font-family: Outfit;
 }
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+::-webkit-scrollbar {
+    display: none;
+}
+
+
+/* ===============================
+   Rich Text (Job Description)
+   =============================== */
+
+.rich-text {
+  font-size: 15px;
+  line-height: 1.7;
+  color: #7a7b7d;
+}
+
+/* Paragraphs */
+.rich-text p {
+  margin-bottom: 16px;
+}
+
+/* Headings */
+.rich-text h1 {
+  font-size: 36px;
+  font-weight: 800;
+  color: #252525;
+  margin: 32px 0 16px;
+}
+
+.rich-text h2 {
+  font-size: 22px;
+  font-weight: 700;
+  color: #252525;
+  margin: 28px 0 14px;
+}
+
+.rich-text h3 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #333333;
+  margin: 24px 0 12px;
+}
+
+.rich-text h4 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #444444;
+  margin: 20px 0 10px;
+}
+
+/* Lists */
+.rich-text ul {
+  padding-left: 20px;
+  margin-bottom: 20px;
+}
+
+.rich-text li {
+  list-style-type: decimal;
+  margin-bottom: 10px;
+  color: #7a7b7d;
+}
+
+/* Strong / Bold text */
+.rich-text strong {
+  color: #252525;
+  font-weight: 600;
+}
+
+/* Links (if any) */
+.rich-text a {
+  color: #2563eb;
+  text-decoration: underline;
+}
+
+/* Optional spacing between sections */
+.rich-text > *:last-child {
+  margin-bottom: 0;
+}
