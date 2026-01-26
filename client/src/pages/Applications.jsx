@@ -1,9 +1,11 @@
 import React, { useState } from 'react'
 import Navbar from '../components/Navbar'
+import { assets } from '../assets/assets'
 
 const Applications = () => {
 
   const [isEdit , setIsEdit] = useState(false)
+  const [resume , setResume] = useState(null)
 
 
   return (
@@ -16,6 +18,12 @@ const Applications = () => {
         {
           isEdit 
           ?  <>
+          <label htmlFor="resumeUpload">
+            <p>Select Resume</p>
+            <input id='resumeUpload' onChange={e => setResume(e.target.files[0])} accept='application/pdf' type="file" hidden />
+            <img src={assets.profile_upload_icon} alt="" />
+          </label>
+          <button>Save</button>
 
           </>
           : <div className='flex gap-2'>
