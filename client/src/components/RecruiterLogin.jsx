@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { assets } from '../assets/assets'
 import { AppContext } from '../context/AppContext'
 
@@ -22,6 +22,15 @@ const RecruiterLogin = () => {
         
       }
     }
+
+    useEffect(()=> {
+      document.body.style.overflow = "hidden"
+
+      return () => {
+        document.body.style.overflow = "unset"
+      }
+
+    },[])
 
 
   return (
