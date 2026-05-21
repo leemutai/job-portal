@@ -50,6 +50,14 @@ const RecruiterLogin = () => {
           {state === 'Login' ? 'login' : 'create account'}
 
         </button>
+        {
+          state === 'Login' 
+          ? <p>Don't have an account? <span>Sign Up</span></p>
+          : <p>Already have an account? <span>Login</span></p>
+        }
+
+        
+        
 
        </form>
 
