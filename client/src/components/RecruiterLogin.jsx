@@ -30,7 +30,15 @@ const RecruiterLogin = () => {
         <p className='text-sm'>Welcome back! Please sign in to continue</p>
 
         { state === "Sign Up" && isTextDataSubmitted 
-        ? <> </>
+        ? <> 
+        <div className='flex items-center gap-4 my-10'>
+          <label htmlFor="image">
+            <img className='w-16 rounded-full' src={image ? URL.createObjectURL(image) : assets.upload_area} alt="" />
+            <input onChange={e=> setImage(e.target.files[0])} type="file" id='image'  hidden/>
+          </label>
+          <p>Upload Company <br />Logo</p>
+        </div>
+        </>
         :  <>
 
         {state !== 'Login' && (
@@ -57,10 +65,11 @@ const RecruiterLogin = () => {
 
         </>
       }
-      <p className='text-sm text-blue-600 my-4 cursor-pointer'>Forgot password?</p>
+
+      {state === "Login" && <p className='text-sm text-blue-600 mt-4 cursor-pointer'>Forgot password?</p>}
        
 
-        <button type='submit' className='bg-blue-600 w-full text-white py-2 rounded-full'>
+        <button type='submit' className='bg-blue-600 w-full text-white py-2 rounded-full mt-4'>
           {state === 'Login' ? 'login' : isTextDataSubmitted ?  'create account' : 'Next'}
 
         </button>
