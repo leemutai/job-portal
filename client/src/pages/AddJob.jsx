@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { Form } from 'react-router-dom';
 import Quill from 'quill';
 import 'quill/dist/quill.snow.css'
+import { JobCategories } from '../assets/assets';
 
 const AddJob = () => {
 
@@ -45,6 +46,16 @@ const AddJob = () => {
         <p>Job Description</p>
         <div ref={editorRef}>
 
+        </div>
+      </div>
+      <div>
+        <div>
+          <p>Job Category</p>
+          <select onChange={e=> setCategory(e.target.value)}>
+            {JobCategories.map((category, index)=> (
+              <option key={index} value={category}>{category}</option>
+            ))}
+          </select>
         </div>
       </div>
 
