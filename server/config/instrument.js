@@ -6,12 +6,13 @@ Sentry.init({
   dsn: "https://d1baead288b47be3d9282d96fc32f234@o4511520281985024.ingest.us.sentry.io/4511520286310400",
   integrations: [
     nodeProfilingIntegration(),
+    Sentry.mongooseIntegration(),
   ],
 
   // Send structured logs to Sentry
   enableLogs: true,
   // Tracing
-  tracesSampleRate: 1.0, //  Capture 100% of the transactions
+  //tracesSampleRate: 1.0, //  Capture 100% of the transactions
   // Set sampling rate for profiling - this is evaluated only once per SDK.init call
   profileSessionSampleRate: 1.0,
   // Trace lifecycle automatically enables profiling during active traces
