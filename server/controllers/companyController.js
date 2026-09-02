@@ -94,10 +94,18 @@ export const loginCompany = async (req, res) => {
 //Get company data
 export const getCompanyData = (req, res) => {
 
+
+
 }
 
 // Post a new job
 export const postJob = async (req, res) => {
+
+    const {title, description, location, salary} = req.body
+
+     const companyId = req.company._id
+
+     console.log(companyId, {title, description, location, salary})
 
 }
 
