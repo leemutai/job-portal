@@ -153,6 +153,22 @@ export const getCompanyJobApplicants = async (req, res) => {
 // Get company posted jobs
 export const getCompanyPostedJobs = async (req, res) => {
 
+    try {
+
+        const companyId = req.company._id
+
+        const jobs = await Job.find({companyId})
+
+        res.json({success: true, jobsData: jobs})
+
+        //(ToDo) Adding no of applicants info in data
+        
+    } catch (error) {
+
+        res.json({success: false, message: error.message})
+        
+    }
+
 }
 
 // change job application status
@@ -162,5 +178,29 @@ export const changeJobApplicationStatus = async (req, res) => {
 
 // change job visibility status
 export const changeVisibility = async (req, res) => {
+
+    try {
+
+        const {id} = req.body
+
+        const companyId = req.company._id
+
+        const job = await Job.findById(id)
+
+        if (companyId.toString() === job.companyId.toString()) {
+
+            job.visible = !job.visible
+            
+        }
+
+        await job.save()
+
+        res.json({success: true, job})
+        
+    } catch (error) {
+
+        res.json({success: false, message: error.message})
+        
+    }
 
 }
