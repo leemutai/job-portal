@@ -95,6 +95,20 @@ export const loginCompany = async (req, res) => {
 //Get company data
 export const getCompanyData = (req, res) => {
 
+    
+
+    try {
+
+        const company = req.company
+
+        res.json({success: true, company})
+        
+    } catch (error) {
+
+        res.json({success: false, message: error.message})
+        
+    }
+
 
 
 }
