@@ -7,7 +7,16 @@ const Dashboard = () => {
 
   const navigate = useNavigate()
 
-  const { companyData } = useContext(AppContext)
+  const { companyData, setCompanyData, setCompanyToken} = useContext(AppContext)
+
+  // Function to logout for compnay
+
+  const logout = () => {
+    setCompanyToken(null)
+    localStorage.removeItem('companyToken')
+    setCompanyData(null)
+    navigate('/')
+  }
 
   return (
     <div className='min-h-screen bg-gray-50'>
@@ -32,24 +41,25 @@ const Dashboard = () => {
 
               <div className='relative group'>
 
-                <img
-                  className='w-8 h-8 border rounded-full cursor-pointer'
-                  src={companyData.image}
-                  alt="company icon"
-                />
+  <img
+    className='w-8 h-8 border rounded-full cursor-pointer'
+    src={companyData.image}
+    alt="company icon"
+  />
 
-                {/* Logout Dropdown */}
-                <div className='absolute right-0 top-full hidden group-hover:block z-20'>
-                  <div className='pt-2'>
-                    <ul className='list-none m-0 p-2 bg-white rounded-md border shadow-lg text-sm min-w-[120px]'>
-                      <li className='py-2 px-3 cursor-pointer hover:bg-gray-100 rounded'>
-                        Logout
-                      </li>
-                    </ul>
-                  </div>
-                </div>
+  {/* Logout Dropdown */}
+  <div className='absolute right-0 top-8 pt-2 hidden group-hover:block z-20'>
+    <ul className='list-none m-0 p-2 bg-white rounded-md border shadow-lg text-sm min-w-[120px]'>
+      <li
+        onClick={logout}
+        className='py-2 px-3 cursor-pointer hover:bg-gray-100 rounded'
+      >
+        Logout
+      </li>
+    </ul>
+  </div>
 
-              </div>
+</div>
 
             </div>
           )}
