@@ -1,3 +1,4 @@
+
 import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { AppContext } from '../context/AppContext'
@@ -13,36 +14,60 @@ import { toast } from 'react-toastify'
 const ApplyJob = () => {
 
   const { id } = useParams()
-  const [jobData, setJobData] = useState(null)
-  const { jobs, backendUrl } = useContext(AppContext)
 
+  const [jobData, setJobData] = useState(null)
+
+  const {
+    jobs,
+    backendUrl,
+    userData,
+    userApplications
+  } = useContext(AppContext)
+
+  // Fetch job details
   const fetchJob = async () => {
 
     try {
-      
-      const {data} =  await axios.get(backendUrl+`/api/jobs/${id}`)
 
-    if (data.success) {
-      setJobData(data.job)
-      
-    } else {
-      toast.error(data.message)
-    }
+      const { data } = await axios.get(
+        backendUrl + `/api/jobs/${id}`
+      )
+
+      if (data.success) {
+        setJobData(data.job)
+      } else {
+        toast.error(data.message)
+      }
+
     } catch (error) {
 
       toast.error(error.message)
-      
+
     }
+  }
 
-    
+  // Handle Apply Now button clicks
+  const applyHandler = async () => {
 
+    try {
 
-    
+      if (!userData) {
+        return toast.error('login to apply for jobs')
+      }
+
+      if (!userData.resume) {
+        return toast.error('Upload your resume to apply')
+      }
+
+    } catch (error) {
+
+      toast.error(error.message)
+
+    }
   }
 
   useEffect(() => {
     fetchJob()
-    
   }, [id])
 
   return jobData ? (
@@ -91,9 +116,13 @@ const ApplyJob = () => {
             </div>
 
             <div className='flex flex-col justify-center text-end text-sm max-md:mx-auto max-md:text-center'>
-              <button className='bg-blue-600 p-2.5 px-10 text-white rounded'>
+              <button
+                onClick={applyHandler}
+                className='bg-blue-600 p-2.5 px-10 text-white rounded'
+              >
                 Apply Now
               </button>
+
               <p className='mt-1 text-gray-600'>
                 Posted {moment(jobData.date).fromNow()}
               </p>
@@ -105,20 +134,30 @@ const ApplyJob = () => {
 
             {/* Left section */}
             <div className='w-full lg:w-2/3'>
-              <h2 className='font-bold text-2xl mb-4'>Job description</h2>
+              <h2 className='font-bold text-2xl mb-4'>
+                Job description
+              </h2>
+
               <div
                 className='rich-text'
-                dangerouslySetInnerHTML={{ __html: jobData.description }}
+                dangerouslySetInnerHTML={{
+                  __html: jobData.description
+                }}
               ></div>
 
-              <button className='bg-blue-600 p-2.5 px-10 text-white rounded mt-10'>
+              <button
+                onClick={applyHandler}
+                className='bg-blue-600 p-2.5 px-10 text-white rounded mt-10'
+              >
                 Apply Now
               </button>
             </div>
 
             {/* Right section */}
             <div className='w-full lg:w-1/3 space-y-5 lg:sticky lg:top-24'>
-              <h2>More Jobs from {jobData.companyId.name}</h2>
+              <h2>
+                More Jobs from {jobData.companyId.name}
+              </h2>
 
               {jobs
                 .filter(
