@@ -6,27 +6,44 @@ import { v2 as cloudinary } from 'cloudinary';
 
 // Get user Data
 export const getUserData = async (req, res) => {
-
-    const userId = req.auth.userId;
-
     try {
+        const auth = await req.auth();
+        const userId = auth.userId;
 
-        const user = await User.findById(userId)
+        console.log('Clerk ID from request:', userId);
 
-        if (!user) {
-
-            return res.json({success: false, message: "User not found"})
-            
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: 'User is not authenticated'
+            });
         }
 
-        res.json({success: true, user})
-        
-    } catch (error) {
+        const user = await User.findById(userId);
 
-        res.json({success: false, message: error.message})
-        
+        console.log('User found in MongoDB:', !!user);
+
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+        }
+
+        return res.json({
+            success: true,
+            user
+        });
+
+    } catch (error) {
+        console.error('getUserData error:', error);
+
+        return res.status(500).json({
+            success: false,
+            message: 'Failed to fetch user data'
+        });
     }
-}
+};
 
 // Apply for a job
 export const applyForJob = async (req, res) => {
