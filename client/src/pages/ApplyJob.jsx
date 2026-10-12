@@ -21,10 +21,13 @@ const ApplyJob = () => {
 
   const [jobData, setJobData] = useState(null)
 
+  const [isAlreadyApplied, setIsAlreadyApplied] = useState(false)
+
   const {
   jobs,
   backendUrl,
   userData,
+  userApplications,
   fetchUserApplications
 } = useContext(AppContext)
 
@@ -86,11 +89,28 @@ const ApplyJob = () => {
     }
   }
 
+  const checkAlreadyApplied = () => {
+    const hasApplied = userApplications.some(item => item.jobId._id === jobData._id)
+
+    setIsAlreadyApplied(hasApplied)
+
+
+  }
+
   useEffect(() => {
     fetchJob()
 
 
   }, [id])
+
+  useEffect(()=> {
+
+    if (userApplications.length > 0 && jobData) {
+      checkAlreadyApplied()
+      
+    }
+
+  },[jobData, userApplications, id])
 
   return jobData ? (
     <>
@@ -142,7 +162,7 @@ const ApplyJob = () => {
                 onClick={applyHandler}
                 className='bg-blue-600 p-2.5 px-10 text-white rounded'
               >
-                Apply Now
+                {isAlreadyApplied? 'Already Applied': 'Apply Now'}
               </button>
 
               <p className='mt-1 text-gray-600'>
@@ -171,7 +191,7 @@ const ApplyJob = () => {
                 onClick={applyHandler}
                 className='bg-blue-600 p-2.5 px-10 text-white rounded mt-10'
               >
-                Apply Now
+                {isAlreadyApplied? 'Already Applied': 'Apply Now'}
               </button>
             </div>
 
