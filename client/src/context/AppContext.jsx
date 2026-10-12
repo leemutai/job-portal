@@ -79,7 +79,7 @@ export const AppContextProvider = (props) => {
         }
     }
 
-    // Function to fetch the user data
+
 
     // Function to fetch the user data
 const fetchUserData = async () => {
@@ -156,7 +156,10 @@ const fetchUserData = async () => {
         showRecruiterLogin, setShowRecruiterLogin,
         companyToken, setCompanyToken,
         companyData, setCompanyData,
-        backendUrl
+        backendUrl,
+        userData , setUserData,
+        userApplications, setUserApplications,
+        fetchUserData
         
 
     }

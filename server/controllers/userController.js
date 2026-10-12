@@ -117,31 +117,61 @@ export const getUserJobApplications = async (req, res) => {
 }
 
 // Update user profile (resume)
+
+
 export const updateUserResume = async (req, res) => {
-
     try {
+        // Clerk Express exposes auth as a function
+        const { userId } = await req.auth();
 
-        const userId = req.auth.userId
+        console.log('Clerk user ID:', userId);
 
-        const resumeFile = req.resumeFile
-
-        const userData = await User.findById(userId)
-
-        if (resumeFile) {
-
-            const resumeUpload = await cloudinary.uploader.upload(resumeFile.path)
-            userData.resume = resumeUpload.secure_url
-            
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: 'User is not authenticated'
+            });
         }
 
-        await userData.save()
+        // Look up the MongoDB user using the Clerk ID
+        const userData = await User.findOne({ _id: userId });
 
-        return res.json({success: true, message: 'Resume updated '})
-        
+        console.log('User found in MongoDB:', !!userData);
+
+        if (!userData) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found for Clerk ID: ' + userId
+            });
+        }
+
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: 'Please select a resume file'
+            });
+        }
+
+        const resumeUpload = await cloudinary.uploader.upload(
+            req.file.path,
+            { resource_type: 'raw' }
+        );
+
+        userData.resume = resumeUpload.secure_url;
+        await userData.save();
+
+        return res.json({
+            success: true,
+            message: 'Resume updated successfully'
+        });
+
     } catch (error) {
+        console.error('Resume update error:', error);
 
-        res.json({success: false, message: error.message})
-        
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
-    
-}
+};
+
