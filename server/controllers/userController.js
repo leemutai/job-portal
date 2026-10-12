@@ -118,30 +118,35 @@ export const applyForJob = async (req, res) => {
 
 // Get user applied applications
 export const getUserJobApplications = async (req, res) => {
+  try {
+    const { userId } = await req.auth()
 
-    try {
-
-        const userId = req.auth.userId;
-
-        const applications = await JobApplication.find({userId})
-        .populate('companyId', 'name email image')
-        .populate('jobId', 'title description location category level salary')
-        .exec()
-
-        if (!applications) {
-
-            return res.json({success: false, message: 'No job applications found for this user'})
-            
-        }
-
-        return res.json({success: true, applications})
-        
-    } catch (error) {
-
-        res.json({success: false, message: error.message})
-        
+    if (!userId) {
+      return res.status(401).json({
+        success: false,
+        message: 'User not authenticated'
+      })
     }
 
+    const applications = await JobApplication.find({ userId })
+      .populate('companyId', 'name email image')
+      .populate(
+        'jobId',
+        'title description location category level salary'
+      )
+
+    return res.json({
+      success: true,
+      applications
+    })
+  } catch (error) {
+    console.error('Fetch applications error:', error)
+
+    return res.status(500).json({
+      success: false,
+      message: error.message
+    })
+  }
 }
 
 // Update user profile (resume)

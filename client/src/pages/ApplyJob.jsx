@@ -22,11 +22,11 @@ const ApplyJob = () => {
   const [jobData, setJobData] = useState(null)
 
   const {
-    jobs,
-    backendUrl,
-    userData,
-    userApplications
-  } = useContext(AppContext)
+  jobs,
+  backendUrl,
+  userData,
+  fetchUserApplications
+} = useContext(AppContext)
 
   // Fetch job details
   const fetchJob = async () => {
@@ -71,11 +71,13 @@ const ApplyJob = () => {
         {headers:{Authorization: `Bearer ${token}`}}
       )
       if (data.success) {
-        toast.success(data.message)
-        
-      } else {
-        toast.error(data.message)
-      }
+  toast.success(data.message)
+
+  // Refresh the user's applications from the backend
+  await fetchUserApplications()
+} else {
+  toast.error(data.message)
+}
 
     } catch (error) {
 
