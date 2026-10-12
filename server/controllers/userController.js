@@ -46,46 +46,74 @@ export const getUserData = async (req, res) => {
 };
 
 // Apply for a job
+
 export const applyForJob = async (req, res) => {
-
-    const {jobId} = req.body;
-
-    const userId = req.auth.userId;
-
     try {
+        // Get the authenticated Clerk user ID
+        const { userId } = await req.auth();
 
-        const isAlreadyApplied = await JobApplication.find({jobId, userId})
-
-        if (isAlreadyApplied.length > 0) {
-
-            return res.json({success: false, message: 'Already applied'})
-            
+        if (!userId) {
+            return res.status(401).json({
+                success: false,
+                message: 'Please log in to apply for this job'
+            });
         }
 
-        const jobData = await Job.findById(jobId)
+        const { jobId } = req.body;
 
-        if (!jobData) {
-
-            return res.json({success: false, message: 'Job not found'})
-            
+        if (!jobId) {
+            return res.status(400).json({
+                success: false,
+                message: 'Job ID is required'
+            });
         }
 
+        // Check whether the user has already applied
+        const existingApplication = await JobApplication.findOne({
+            jobId,
+            userId
+        });
+
+        if (existingApplication) {
+            return res.json({
+                success: false,
+                message: 'Already applied'
+            });
+        }
+
+        // Find the job
+        const job = await Job.findById(jobId);
+
+        if (!job) {
+            return res.status(404).json({
+                success: false,
+                message: 'Job not found'
+            });
+        }
+
+        // Create the application
         await JobApplication.create({
-            companyId: jobData.companyId,
+            companyId: job.companyId,
             userId,
             jobId,
             date: Date.now()
-        })
-        
+        });
 
-        res.json({success: true, message: 'Applied successfully'})
+        return res.json({
+            success: true,
+            message: 'Applied successfully'
+        });
+
     } catch (error) {
+        console.error('Apply for job error:', error);
 
-        res.json({success: false, message: error.message})
-        
+        return res.status(500).json({
+            success: false,
+            message: error.message
+        });
     }
+};
 
-}
 
 
 // Get user applied applications
