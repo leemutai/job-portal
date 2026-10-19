@@ -1,8 +1,60 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { assets, viewApplicationsPageData } from '../assets/assets'
+import { AppContext } from '../context/AppContext'
+import axios from 'axios'
+import { toast } from 'react-toastify'
+import Loading from '../components/Loading'
 
 const ViewApplications = () => {
-  return (
+
+  const {backendUrl, companyToken} = useContext(AppContext)
+
+  const [applicants, setApplicants] = useState([])
+  const [loading, setLoading] = useState(true)
+
+  // Function to fetch company job applications data
+
+  const fetchCompanyJobApplications = async () => {
+  try {
+    setLoading(true)
+
+    const { data } = await axios.get(
+      backendUrl + '/api/company/applicants',
+      {
+        headers: { token: companyToken }
+      }
+    )
+
+    if (data.success) {
+      console.log('Applications received:', data.applications)
+      setApplicants(data.applications.reverse())
+    } else {
+      toast.error(data.message)
+    }
+  } catch (error) {
+    console.error(
+      'Error fetching applications:',
+      error.response?.data || error.message
+    )
+    toast.error(
+      error.response?.data?.message || error.message
+    )
+  } finally {
+    setLoading(false)
+  }
+}
+
+  useEffect(() => {
+
+    if (companyToken) {
+      fetchCompanyJobApplications()
+      
+    }
+
+  },[companyToken])
+
+
+  return applicants ? applicants.length === 0 ? (<div></div>) : (
     <div className='container mx-auto p-4'>
       <div className='overflow-x-auto'>
         <table className='w-full max-w-4xl bg-white border border-gray-200 max-sm:text-sm'>
@@ -21,7 +73,7 @@ const ViewApplications = () => {
 
           {/* TABLE BODY */}
           <tbody>
-            {viewApplicationsPageData.map((applicant, index) => (
+            {applicants.filter( item => item.jobId && item.userId).map((applicant, index) => (
               <tr key={index} className='text-gray-700 hover:bg-gray-50'>
 
                 {/* INDEX */}
@@ -33,26 +85,26 @@ const ViewApplications = () => {
                 <td className='py-2 px-4 border-b flex items-center'>
                   <img
                     className='w-10 h-10 rounded-full mr-3 max-sm:hidden'
-                    src={applicant.imgSrc}
+                    src={applicant.userId.image}
                     alt='user'
                   />
-                  <span>{applicant.name}</span>
+                  <span>{applicant.userId.name}</span>
                 </td>
 
                 {/* JOB TITLE */}
                 <td className='py-2 px-4 border-b max-sm:hidden'>
-                  {applicant.jobTitle}
+                  {applicant.jobId.title}
                 </td>
 
                 {/* LOCATION */}
                 <td className='py-2 px-4 border-b max-sm:hidden'>
-                  {applicant.location}
+                  {applicant.jobId.location}
                 </td>
 
                 {/* RESUME */}
                 <td className='py-2 px-4 border-b'>
                   <a
-                    href={applicant.resumeUrl || '#'}
+                    href={applicant.userId.resume || '#'}
                     target='_blank'
                     rel='noreferrer'
                     className='bg-blue-50 text-blue-500 px-3 py-1 rounded inline-flex gap-2 items-center hover:bg-blue-100'
@@ -101,7 +153,7 @@ const ViewApplications = () => {
         </table>
       </div>
     </div>
-  )
+  ) : <Loading />
 }
 
 export default ViewApplications
