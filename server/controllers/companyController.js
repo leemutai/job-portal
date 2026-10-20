@@ -200,9 +200,53 @@ export const getCompanyPostedJobs = async (req, res) => {
 }
 
 // change job application status
+// Change job application status
 export const changeJobApplicationStatus = async (req, res) => {
+  try {
+    const { id, status } = req.body;
+    const companyId = req.company?._id;
 
-}
+    if (!companyId) {
+      return res.status(401).json({
+        success: false,
+        message: "Company authentication required",
+      });
+    }
+
+    if (!id || !["Accepted", "Rejected"].includes(status)) {
+      return res.status(400).json({
+        success: false,
+        message: "A valid application ID and status are required",
+      });
+    }
+
+    // Only update applications belonging to this company.
+    const application = await JobApplication.findOneAndUpdate(
+      { _id: id, companyId },
+      { $set: { status } },
+      { new: true, runValidators: true }
+    );
+
+    if (!application) {
+      return res.status(404).json({
+        success: false,
+        message: "Application not found for this company",
+      });
+    }
+
+    return res.json({
+      success: true,
+      message: `Application ${status.toLowerCase()} successfully`,
+    });
+  } catch (error) {
+    console.error("Change application status error:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message || "Failed to update application status",
+    });
+  }
+};
 
 // change job visibility status
 export const changeVisibility = async (req, res) => {
