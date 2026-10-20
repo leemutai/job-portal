@@ -7,6 +7,7 @@ import { AppContext } from '../context/AppContext'
 import { useAuth, useUser } from '@clerk/clerk-react'
 import axios from 'axios'
 import { toast } from 'react-toastify'
+import { useEffect } from 'react'
 
 const Applications = () => {
 
@@ -16,7 +17,7 @@ const Applications = () => {
   const [isEdit , setIsEdit] = useState(false)
   const [resume , setResume] = useState(null)
 
-  const { backendUrl,userData, userApplications, fetchUserData} = useContext(AppContext)
+  const { backendUrl,userData, userApplications, fetchUserData, fetchUserApplications } = useContext(AppContext)
 
   const updateResume = async () => {
 
@@ -53,6 +54,15 @@ const Applications = () => {
     setResume(null)
 
   }
+
+  useEffect (() => {
+
+    if (user) {
+      fetchUserApplications()
+      
+    }
+
+  },[user])
 
 
   return (
