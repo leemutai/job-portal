@@ -24,11 +24,11 @@ const Dashboard = () => {
   }
 
   // Redirect to Manage Jobs when company data is available
-  useEffect(() => {
-    if (companyData) {
-      navigate('/dashboard/manage-jobs')
-    }
-  }, [companyData, navigate])
+  //useEffect(() => {
+ //   if (companyData) {
+ //     navigate('/dashboard/manage-jobs')
+ //   }
+ // }, [companyData, navigate])
 
   return (
     <div className="min-h-screen bg-gray-50">
