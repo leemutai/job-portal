@@ -1,3 +1,4 @@
+
 import './config/instrument.js';
 import express from 'express';
 import cors from 'cors';
@@ -21,9 +22,21 @@ console.log('Database connection initialized');
 await connectCloudinary();
 console.log('Cloudinary configuration initialized');
 
-// Middleware
+// General middleware
 app.use(cors());
+
+// IMPORTANT: Register the Clerk webhook BEFORE express.json().
+// Svix needs the original raw request body to verify the signature.
+app.post(
+    '/webhooks',
+    express.raw({ type: 'application/json' }),
+    clerkWebhooks
+);
+
+// Parse JSON for all other routes
 app.use(express.json());
+
+// Clerk authentication middleware
 app.use(clerkMiddleware());
 
 // Debug Clerk authentication for user API requests
@@ -37,7 +50,10 @@ app.use(async (req, res, next) => {
         try {
             const auth = await req.auth();
 
-            console.log('Clerk user ID:', auth.userId ?? 'No authenticated user');
+            console.log(
+                'Clerk user ID:',
+                auth.userId ?? 'No authenticated user'
+            );
         } catch (error) {
             console.error('Clerk authentication error:', error.message);
         }
@@ -56,9 +72,6 @@ app.get('/debug-sentry', function mainHandler(req, res) {
     throw new Error('My first Sentry error!');
 });
 
-// Clerk webhook
-app.post('/webhooks', clerkWebhooks);
-
 // Company routes
 app.use('/api/company', companyRoutes);
 
@@ -68,11 +81,6 @@ app.use('/api/jobs', jobRoutes);
 // Log requests reaching the user API
 app.use('/api/user', (req, res, next) => {
     console.log('User API request:', req.method, req.originalUrl);
-
-    console.log(
-        'Authenticated Clerk user ID:',
-        req.auth?.userId ?? 'No authenticated user'
-    );
 
     next();
 });
